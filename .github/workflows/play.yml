@@ -1,0 +1,30 @@
+name: CI
+on:
+  push:
+  release:
+    types:
+      - published
+  pull_request:
+
+jobs:
+  publish:
+    #if: ${{ github.event_name == 'release' }}
+    strategy:
+      matrix:
+        java: [17]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout the sources
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test env
+        id: test_env
+        run: |
+          python .github/workflows/scripts/test.py
+      - name: Print env
+        run: |
+          echo ${{ steps.test_env.outputs.test1 }}
+          echo ${{ steps.test_env.outputs.test2 }}
